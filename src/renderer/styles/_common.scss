@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web:200,300,400,400i,600,700,900');
+html,
+body,
+#app {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-kerning: auto;
+}
+
+#app {
+  height: initial;
+}
+
+* {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: 'Titillium Web', sans-serif;
+  color: $black;
+  background: $main-bg;
+}
+
+a {
+  text-decoration: none;
+  color: $black;
+}
+
+h3 {
+  @include h3;
+  margin-top: 0;
+  padding-top: 32px;
+  margin-bottom: 16px;
+}
+
+.upload-container {
+  @include center-vh;
+  .upload-dnd {
+    text-align: center;
+    max-width: 420px;
+    margin-top: 24px;
+    width: 100%;
+    .drag-n-drop {
+      height: 440px;
+      display: inline-block;
+      width: 100%;
+      border: $black-2 2px dashed;
+      border-radius: 8px;
+      z-index: 3;
+      cursor: pointer;
+      .title {
+        margin-top: 88px;
+        @include h2;
+        z-index: 2;
+      }
+      &.dragging {
+        border-color: $accent-2;
+      }
+      img {
+        z-index: 2;
+        height: 96px;
+        width: 96px;
+      }
+    }
+    .file-manual {
+      width: 100%;
+      margin-top: 12px;
+    }
+  }
+}
+
+.credentials-container {
+  text-align: center;
+  form {
+    display: inline-block;
+    width: 100%;
+    max-width: 600px;
+    .form-group {
+      margin-top: 32px;
+      margin-bottom: 32px;
+    }
+  }
+}
+
+.big {
+  width: 100%;
+}

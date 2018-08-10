@@ -1,0 +1,50 @@
+.btn-black {
+    background-color: $black;
+    border: none;
+    border-radius: 3px;
+    box-shadow: none;
+    color: $white;
+    cursor: pointer;
+    @include h6;
+    line-height: 1.15;
+    outline: none;
+    padding: 15px 24px;
+    position: relative;
+    text-align: center;
+    @include transition;
+    z-index: 1;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    &:hover,
+    &:focus,
+    &:active {
+        background-color: $black-6;
+    }
+    &.btn-color {
+        background: $primary-gradient;
+
+        &:before {
+            background: $primary-gradient-hover;
+            border-radius: 3px;
+            bottom: 0;
+            content: '';
+            left: 0;
+            opacity: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            @include transition;
+            z-index: -1;
+        }
+        &:hover,
+        &:focus,
+        &:active {
+            &:before {
+                opacity: 1;
+            }
+        }
+    }
+}

@@ -1,0 +1,118 @@
+$auth-bg: url(/static/auth_bg.svg);
+$main-bg: #F6F6F6;
+$primary-gradient-check-box: linear-gradient(86.75deg, #2F80ED 15.18%, #249BDF 91.85%);
+$primary-gradient: linear-gradient(37deg, #2F80ED 6.89%, #249BDF 96.3%);
+$primary-gradient-hover : linear-gradient(82.23deg, #579FFF 2.61%, #49BEFF 97.39%);
+
+$shadow-1: 0px 4px 16px rgba(0, 0, 0, 0.08);
+$accent: #2F80ED;
+$accent-1: rgba(28, 121, 229, 0.7);
+$accent-2: rgba(47, 128, 237, 0.3);
+$accent-3: rgba(28, 121, 229, 0.1);
+$black: #373737;
+$black-0: #000;
+$black-1: rgba(55, 55, 55, 0.7);
+$black-2: rgba(55, 55, 55, 0.3);
+$black-3: rgba(55, 55, 55, 0.03);
+$black-4: rgba(55, 55, 55, 0.1);
+$black-01: $black-4;
+$black-5: rgb(235, 235, 235);
+$black-6: #696969;
+$red: rgb(255, 100, 100);
+$error: #ea3333;
+$white: #FFFFFF;
+$gray: #F6F6F6;
+$gray-1: rgba(214, 220, 226, 0.5);
+$gray-2: #F9F9F9;
+$gray-3: #ebebeb;
+$gray-4: #C4C4C4;
+$green-2: #27AE60;
+$white-1: rgba(255, 255, 255, 0.7);
+$white-2: rgba(255, 255, 255, 0.3);
+$white-3: rgba(255, 255, 255, 0.1);
+$font-extra-light: 200;
+$font-light: 300;
+$font-normal: 400;
+$font-semi-bold: 600;
+$font-bold: 700;
+$transition-speed: 0.3s;
+@mixin h0 {
+    font-size: 48px;
+    font-style: normal;
+    font-weight: $font-light;
+    line-height: normal;
+}
+
+@mixin center-vh {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin paragraph {
+    font-size: 16px;
+}
+
+@mixin bold {
+    font-weight: $font-bold;
+}
+
+@mixin card-outline {
+    border: $black-3 1px solid;
+}
+
+@mixin card-shadow {
+    box-shadow: $shadow-1;
+}
+
+@mixin text-gradient($gradient) {
+    background: $gradient;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@mixin h1 {
+    font-size: 36px;
+    font-weight: $font-normal;
+}
+
+@mixin h2 {
+    font-size: 32px;
+    font-weight: $font-normal;
+}
+
+@mixin h3 {
+    font-size: 28px;
+    font-weight: $font-normal;
+}
+
+@mixin h4 {
+    font-size: 24px;
+    font-weight: $font-normal;
+}
+
+@mixin h5 {
+    font-size: 18px;
+    font-weight: $font-normal;
+}
+
+@mixin h6 {
+    font-size: 14px;
+}
+
+@mixin p {
+    font-size: 16px;
+    font-weight: $font-normal;
+}
+
+@mixin transition {
+    /* Firefox */
+    -moz-transition: -moz-transform $transition-speed ease;
+    /* WebKit */
+    -webkit-transition: -webkit-transform $transition-speed ease;
+    /* Opera */
+    -o-transition: -o-transform $transition-speed ease;
+    /* Standard */
+    transition: all $transition-speed ease;
+}

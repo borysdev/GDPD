@@ -1,0 +1,130 @@
+input,
+textarea {
+  box-sizing: border-box;
+  &.text-input {
+    border: $black 1px solid;
+    box-shadow: none;
+    @include p;
+    font-weight: $font-bold;
+    outline: none;
+    padding: 13px 15px;
+    @include transition;
+    width: 100%;
+
+    &:hover, &:focus {
+      border: $accent 1px solid;
+      cursor: text;
+    }
+    &.error {
+      border: $error 1px solid !important;
+    }
+    &:active {
+      border: $accent 1px solid;
+    }
+    &.complete {
+      color: $accent;
+    }
+
+    &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+      color: $white;
+    }
+    &::-moz-placeholder { /* Firefox 19+ */
+      color: $white;
+    }
+    &:-ms-input-placeholder { /* IE 10+ */
+      color: $white;
+    }
+    &:-moz-placeholder { /* Firefox 18- */
+      color: $white;
+    }
+  }
+}
+.form-group {
+    position: relative;
+    &.input-with-btn {
+        display: inline-block;
+        max-width: 240px;
+        position: relative;
+        text-align: left;
+        .btn-black {
+            //border-radius: 0;
+            float: right;
+            line-height: 1.2;
+            max-width: 95px;
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 1;
+        }
+        .text-input {
+            border-radius: 0 3px 3px 0;
+            float: left;
+            font-weight: $font-bold;
+            line-height: 1.15;
+            padding-right: 95px;
+            text-transform: uppercase; //width: calc(100% - 95px);
+            width: 100%;
+        }
+    }
+    label {
+        color: $black;
+        cursor: text;
+        @include h6;
+        left: 0;
+        padding: 13px 0 0 15px;
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        @include transition;
+        user-select: none;
+        -moz-user-select: none;
+        &:focus {
+            outline: 0;
+        }
+        span {
+            color: $black-2;
+            opacity: 0;
+            padding-left: 6px;
+            transition: $transition-speed;
+        }
+    }
+    input:disabled {
+        background-color: $white;
+        border-color: $black-4;
+        &+label {
+            color: $black-2;
+            transform: translate3d(-12px, -110%, 0);
+            z-index: 1;
+            span {
+                opacity: 1;
+            }
+        }
+    }
+    &.with-text .text-input+label,
+    .text-input.with-text+label,
+    .text-input:not(:placeholder-shown)+label,
+    .text-input:focus+label,
+    label.float {
+        color: $black-0;
+        transform: translate3d(-12px, -110%, 0);
+        z-index: 1;
+    }
+    &.with-text .text-input,
+    .text-input.with-text,
+    .text-input:not(:placeholder-shown) {
+        //color: $accent;
+        &+label {
+            color: $black-2;
+            span {
+                opacity: 1;
+            }
+        }
+    }
+    .text-input:focus+label,
+    label.float {
+        color: $black-0;
+        span {
+            opacity: 1;
+        }
+    }
+}

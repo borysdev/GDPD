@@ -1,0 +1,11 @@
+.progress-container {
+    margin-top: 60vh;
+    .progress-bar {
+        border-top: $accent 14px solid;
+        width: 5%;
+        .percents {
+            text-align: right;
+            @include h3;
+        }
+    }
+}
