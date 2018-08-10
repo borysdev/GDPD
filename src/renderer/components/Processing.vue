@@ -11,7 +11,7 @@
 <script>
 import { remote } from 'electron';
 import * as fs from 'fs';
-import { setTimeout } from 'timers';
+
 export default {
   name: 'processing',
   uses: ['linkedin', 'progress'],
@@ -30,8 +30,13 @@ export default {
     }
   },
   async created() {
-    if(!this.$linkedin.list) return this.$router.push({ name: "Homepage" })
-    let file = await this.$linkedin.processInitialList();
+    if (!this.$linkedin.list) return this.$router.push({ name: 'Homepage' });
+    let file;
+    try {
+      file = await this.$linkedin.processInitialList();
+    } catch (e) {
+      return this.$router.push({ name: 'Homepage' });
+    }
     this.$progress.finish();
     this.finishProcessing(file);
   },

@@ -40,16 +40,24 @@ export function LinkedInService($progress) {
         },
 
         async newSession() {
-            if (browser) await browser.close();
+            
+            
+            let exPath = puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked');
+          //  alert('execpath: '+ exPath);
+
             let viewport = {
                 height: 1024,
                 width: 840
             }
+
             browser = await puppeteer.launch({
+                executablePath: exPath,
                 headless: false,
                 defaultViewport: viewport
             });
+            
             page = await browser.newPage();
+
             await page.setViewport(viewport)
             this.authorized = false;
         },
