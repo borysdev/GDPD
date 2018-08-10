@@ -1,5 +1,5 @@
 import {
-    request
+  request
 } from 'https';
 
 const puppeteer = require('puppeteer');
@@ -9,154 +9,166 @@ const iPhone6 = devices['iPhone 6'];
 const LOGIN_PAGE = 'https://www.linkedin.com/uas/login';
 
 import {
-    FETCH_MUTUALS_LINK,
-    GO_TO_NEXT_PAGE,
-    FETCH_MUTUALS_LIST,
-    PROSPECT_INFO,
-    QUERY_HIGHLIGHTS_BLOCK,
-    QUERY_NEXT_BUTTON,
-    USER_AVATAR,
-    QUERY_PROFILE_BLOCK,
-    MUTUALS_COUNT
-} from '../utils/query'
+  FETCH_MUTUALS_LINK,
+  GO_TO_NEXT_PAGE,
+  FETCH_MUTUALS_LIST,
+  PROSPECT_INFO,
+  QUERY_HIGHLIGHTS_BLOCK,
+  QUERY_NEXT_BUTTON,
+  USER_AVATAR,
+  QUERY_PROFILE_BLOCK,
+  MUTUALS_COUNT
+} from '../utils/query';
 
 async function snap(page, message) {
-    console.info('---| ' + message)
-    await page.screenshot({
-        path: 'example.png'
-    });
+  console.info('---| ' + message);
+  await page.screenshot({
+    path: 'example.png'
+  });
 }
 
+// function adapter(list) {
+
+// }
 export function LinkedInService($progress) {
-    let browser, page;
+  let browser, page;
 
-    return {
-        list: null,
-        authorized: false,
-        profile: {},
+  return {
+    list: null,
+    authorized: false,
+    profile: {},
 
-        parseInitialList(file) {
-            this.list = JSON.parse(require('fs').readFileSync(file.path));
-        },
+    parseInitialList(file) {
+      this.list = JSON.parse(require('fs').readFileSync(file.path));
+      console.log('parsed', this.list)
+    },
 
-        async newSession() {
-            
-            
-            let exPath = puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked');
-          //  alert('execpath: '+ exPath);
+    async newSession() {
+      let exPath = puppeteer
+        .executablePath()
+        .replace('app.asar', 'app.asar.unpacked');
 
-            let viewport = {
-                height: 1024,
-                width: 840
-            }
+      //  alert('execpath: '+ exPath);
 
-            browser = await puppeteer.launch({
-                executablePath: exPath,
-                headless: false,
-                defaultViewport: viewport
-            });
-            
-            page = await browser.newPage();
+      let viewport = {
+        height: 1024,
+        width: 840
+      };
 
-            await page.setViewport(viewport)
-            this.authorized = false;
-        },
+      browser = await puppeteer.launch({
+        executablePath: exPath,
+        headless: false,
+        defaultViewport: viewport
+      });
 
-        async authorize() {
-            await this.newSession();
-            await page.goto(LOGIN_PAGE);
-            await page.waitForFunction('location.href.includes("https://www.linkedin.com/feed/")', {
-                timeout: 300000
-            });
-            await page.waitForNavigation({
-                waitUntil: 'load'
-            });
-            this.authorize = true;
-            await page.setViewport({
-                width: 840,
-                height: 1524
-            })
-        },
-        async getUserData() {
-            await page.waitForFunction(QUERY_PROFILE_BLOCK);
-            let avatar = await page.evaluate(USER_AVATAR);
-            return {
-                avatar
-            };
-        },
-        async parseProspectProfile(link) {
-            await page.goto(link);
-            await page.waitForFunction(QUERY_HIGHLIGHTS_BLOCK);
+      page = await browser.newPage();
 
-            const prospect = await page.evaluate(PROSPECT_INFO);
-            $progress.totalMutuals = await page.evaluate(MUTUALS_COUNT);
+      await page.setViewport(viewport);
+      this.authorized = false;
+    },
 
-            console.log('Total mutuals: ' + $progress.totalMutuals);
-
-            let mutualsLink = await page.evaluate(FETCH_MUTUALS_LINK);
-            return {
-                mutualsLink,
-                prospect
-            };
-        },
-        async getMutualsFrom(link) {
-            await page.goto(link);
-            let hasNextPage = true;
-            let mutuals = [];
-            let prevUrl = 0
-            while (hasNextPage) {
-                await page.waitForFunction(`'${prevUrl}' !== location.href`)
-                await page.waitFor(500);
-
-                let m = await page.evaluate(FETCH_MUTUALS_LIST);
-                console.log(`Scrapped from page ${m.length} users.`, m);
-                mutuals = [...mutuals, ...m];
-
-                hasNextPage = await page.evaluate(QUERY_NEXT_BUTTON);
-
-                prevUrl = await page.evaluate(`location.href`)
-                console.log(`Has next page: ${hasNextPage}. Fetched ${mutuals.length} mutuals`);
-                $progress.stepMutualScan();
-                if (hasNextPage)
-                    await page.evaluate(GO_TO_NEXT_PAGE);
-            }
-            return mutuals;
-        },
-        async processInitialList() {
-            let urls = this.list.urls;
-
-            $progress.totalProspects = urls.length;
-
-            let parsed = {
-                id: this.list.id,
-                listName: this.list.name,
-                instructions: this.list.instruction,
-                peopleOfInterest: urls,
-                contacts: []
-            };
-            if (!this.authorized) {
-                await this.authorize();
-            }
-            $progress.add(5);
-            let profile = await this.getUserData();
-            parsed.myImage = profile.avatar;
-            $progress.add(15);
-            for (const url of urls) {
-                let {
-                    mutualsLink,
-                    prospect
-                } = await this.parseProspectProfile(url);
-                $progress.stepProspectScan();
-                prospect.mutualContacts = await this.getMutualsFrom(mutualsLink);
-                prospect.mutualContacts = prospect.mutualContacts.map(m => ({
-                    name: m.name,
-                    linkedInProfileLink: m.url
-                }));
-                parsed.contacts.push(prospect);
-            }
-            console.log("DONE", parsed)
-            browser.close();
-            return parsed;
+    async authorize() {
+      await this.newSession();
+      await page.goto(LOGIN_PAGE);
+      await page.waitForFunction(
+        'location.href.includes("https://www.linkedin.com/feed/")', {
+          timeout: 300000
         }
-    };
+      );
+      await page.waitForNavigation({
+        waitUntil: 'load'
+      });
+      this.authorized = true;
+      await page.setViewport({
+        width: 840,
+        height: 1524
+      });
+    },
+    async getUserData() {
+      await page.waitForFunction(QUERY_PROFILE_BLOCK);
+      let avatar = await page.evaluate(USER_AVATAR);
+      return {
+        avatar
+      };
+    },
+    async parseProspectProfile(link) {
+      await page.goto(link);
+      await page.waitForFunction(QUERY_HIGHLIGHTS_BLOCK);
+
+      const prospect = await page.evaluate(PROSPECT_INFO);
+      $progress.totalMutuals = await page.evaluate(MUTUALS_COUNT);
+
+      console.log('Total mutuals: ' + $progress.totalMutuals);
+
+      let mutualsLink = await page.evaluate(FETCH_MUTUALS_LINK);
+      return {
+        mutualsLink,
+        prospect
+      };
+    },
+    async getMutualsFrom(link) {
+      console.log('going to mutuals', link);
+      await page.goto(link);
+      let hasNextPage = true;
+      let mutuals = [];
+      let prevUrl = 0;
+      while (hasNextPage) {
+        await page.waitForFunction(`'${prevUrl}' !== location.href`);
+        await page.waitFor(500);
+
+        let m = await page.evaluate(FETCH_MUTUALS_LIST);
+        console.log(`Scrapped from page ${m.length} users.`, m);
+        mutuals = [...mutuals, ...m];
+
+        hasNextPage = await page.evaluate(QUERY_NEXT_BUTTON);
+
+        prevUrl = await page.evaluate(`location.href`);
+        console.log(
+          `Has next page: ${hasNextPage}. Fetched ${mutuals.length} mutuals`
+        );
+        $progress.stepMutualScan();
+        if (hasNextPage) await page.evaluate(GO_TO_NEXT_PAGE);
+      }
+      return mutuals;
+    },
+    async processInitialList() {
+      let contacts = this.list.Contacts;
+      console.log(contacts);
+      $progress.totalProspects = contacts.length;
+
+      if (!this.authorized) {
+        await this.authorize();
+      }
+
+      // $progress.add(5);
+      //profile = await this.getUserData();
+
+      // parsed.myImage = profile.avatar;
+      $progress.add(20);
+      for (const contact of contacts) {
+
+        let mutualsLink;
+        try {
+          let res = await this.parseProspectProfile(
+            contact.linkedInProfileLink
+          );
+          mutualsLink = res.mutualsLink;
+          console.log('prospect', res);
+          Object.assign(contact, res.prospect);
+        } catch (e) {
+          console.error('Tried to scan non-mutual', e);
+          continue;
+        }
+        $progress.stepProspectScan();
+        contact.MutualContacts = await this.getMutualsFrom(mutualsLink);
+        contact.MutualContacts = contact.MutualContacts.map(m => ({
+          name: m.name,
+          linkedInProfileLink: m.url
+        }));
+      }
+      console.log('DONE', this.list);
+      browser.close();
+      return this.list
+    }
+  };
 }

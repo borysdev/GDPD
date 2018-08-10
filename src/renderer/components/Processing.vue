@@ -22,7 +22,7 @@ export default {
       });
       if (saveTo && saveTo.length > 0) {
         fs.writeFileSync(
-          `${saveTo[0]}/Parsed ${list.listName}.json`,
+          `${saveTo[0]}/Parsed ${list.name}.json`,
           JSON.stringify(list)
         );
       }
@@ -35,6 +35,7 @@ export default {
     try {
       file = await this.$linkedin.processInitialList();
     } catch (e) {
+      alert(e);
       return this.$router.push({ name: 'Homepage' });
     }
     this.$progress.finish();
