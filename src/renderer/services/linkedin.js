@@ -148,9 +148,10 @@ export function LinkedInService($progress) {
                 } = await this.parseProspectProfile(url);
                 $progress.stepProspectScan();
                 prospect.mutualContacts = await this.getMutualsFrom(mutualsLink);
-                // --- remove this when additional data needed
-                prospect.mutualContacts = prospect.mutualContacts.map(m => m.name);
-                // ---
+                prospect.mutualContacts = prospect.mutualContacts.map(m => ({
+                    name: m.name,
+                    linkedInProfileLink: m.url
+                }));
                 parsed.contacts.push(prospect);
             }
             console.log("DONE", parsed)
