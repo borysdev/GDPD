@@ -29,6 +29,11 @@ export const QUERY_HIGHLIGHTS_BLOCK = () => {
     const HIGHLIGHTS_BLOCK = '.pv-highlight-entity.ember-view'
     return !!document.querySelector(HIGHLIGHTS_BLOCK);
 }
+export const QUERY_PROFILE_READY = () => {
+    const EXPERIENCE_BLOCK = '#experience-section';
+    const INTERESTS_BLOCK = '.pv-interests-section';
+    return !!document.querySelector(EXPERIENCE_BLOCK) || !!document.querySelector(INTERESTS_BLOCK);
+}
 export const QUERY_NEXT_BUTTON = () => {
     const MUTUALS_NEXT_BTN = 'button.next';
     return !!document.querySelector(MUTUALS_NEXT_BTN)

@@ -16,22 +16,24 @@ export default {
   uses: ['linkedin'],
   data() {
     return {
-      login: '',
-      pass: ''
+      login: "",
+      pass: ""
     };
   },
   methods: {
-    onSubmit() {
-      this.$linkedin.login = this.login;
-      this.$linkedin.password = this.pass;
-      console.log(this.$linkedin);
+    async onSubmit() {
+      try {
+        await this.$linkedin.authorize(this.login, this.pass);
+        console.log("Logged in successful")
+      }catch(e) {
+        console.log(e);
+        return alert("Bad credentials");
+      }
       this.$router.push({ name: 'Processing' });
     }
   },
   created() {
     if(!this.$linkedin.list) return this.$router.push({ name: "Homepage" })
-      this.login = this.$linkedin.login;
-      this.pass = this.$linkedin.password;
   },
   components: {
     TextInput

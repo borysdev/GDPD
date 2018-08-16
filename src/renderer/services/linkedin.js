@@ -1,12 +1,8 @@
-import {
-  request
-} from 'https';
-
 const puppeteer = require('puppeteer');
-const devices = require('puppeteer/DeviceDescriptors');
-const iPhone6 = devices['iPhone 6'];
 
 const LOGIN_PAGE = 'https://www.linkedin.com/uas/login';
+const LOGIN_LOG_INPUT = '#session_key-login';
+const LOGIN_PASS_INPUT = '#session_password-login';
 
 import {
   FETCH_MUTUALS_LINK,
@@ -17,6 +13,7 @@ import {
   QUERY_NEXT_BUTTON,
   USER_AVATAR,
   QUERY_PROFILE_BLOCK,
+  QUERY_PROFILE_READY,
   MUTUALS_COUNT
 } from '../utils/query';
 
@@ -27,9 +24,6 @@ async function snap(page, message) {
   });
 }
 
-// function adapter(list) {
-
-// }
 export function LinkedInService($progress) {
   let browser, page;
 
@@ -40,7 +34,7 @@ export function LinkedInService($progress) {
 
     parseInitialList(file) {
       this.list = JSON.parse(require('fs').readFileSync(file.path));
-      console.log('parsed', this.list)
+      console.log('parsed', this.list);
     },
 
     async newSession() {
@@ -57,8 +51,9 @@ export function LinkedInService($progress) {
 
       browser = await puppeteer.launch({
         executablePath: exPath,
-        headless: false,
-        defaultViewport: viewport
+      //  headless: false,
+        defaultViewport: viewport,
+        slowMo: 50
       });
 
       page = await browser.newPage();
@@ -67,18 +62,30 @@ export function LinkedInService($progress) {
       this.authorized = false;
     },
 
-    async authorize() {
+    async authorize(login, pass) {
       await this.newSession();
-      await page.goto(LOGIN_PAGE);
-      await page.waitForFunction(
-        'location.href.includes("https://www.linkedin.com/feed/")', {
-          timeout: 300000
-        }
-      );
+      page.goto(LOGIN_PAGE);
+
+      console.log('login...');
       await page.waitForNavigation({
         waitUntil: 'load'
       });
+      console.log('loaded login');
+
+      await page.focus(LOGIN_LOG_INPUT);
+      await page.type(LOGIN_LOG_INPUT, login);
+      await page.focus(LOGIN_PASS_INPUT);
+      await page.type(LOGIN_PASS_INPUT, pass);
+
+      await page.evaluate("document.querySelector('#btn-primary').click()");
+
       this.authorized = true;
+      await page.waitForFunction(
+        'location.href.includes("https://www.linkedin.com/feed/")',
+        {
+          timeout: 10000
+        }
+      );
       await page.setViewport({
         width: 840,
         height: 1524
@@ -93,16 +100,33 @@ export function LinkedInService($progress) {
     },
     async parseProspectProfile(link) {
       await page.goto(link);
-      await page.waitForFunction(QUERY_HIGHLIGHTS_BLOCK);
-
-      const prospect = await page.evaluate(PROSPECT_INFO);
-      $progress.totalMutuals = await page.evaluate(MUTUALS_COUNT);
-
-      console.log('Total mutuals: ' + $progress.totalMutuals);
-
-      let mutualsLink = await page.evaluate(FETCH_MUTUALS_LINK);
-      return {
+      let hasMutuals = false,
         mutualsLink,
+        prospect;
+
+      try {
+        await page.waitForFunction(QUERY_PROFILE_READY);
+        prospect = await page.evaluate(PROSPECT_INFO);
+
+        try {
+          await page.waitForFunction(QUERY_HIGHLIGHTS_BLOCK);
+          hasMutuals = true;
+        } catch (e) {
+          console.log('No mutuals with contact');
+        }
+      } catch (e) {
+        console.log('Cant load profile info');
+        return {};
+      }
+
+      if (hasMutuals) {
+        $progress.totalMutuals = await page.evaluate(MUTUALS_COUNT);
+        console.log('Total mutuals: ' + $progress.totalMutuals);
+        mutualsLink = await page.evaluate(FETCH_MUTUALS_LINK);
+      }
+
+      return {
+        mutualsLink: hasMutuals ? mutualsLink : null,
         prospect
       };
     },
@@ -133,7 +157,6 @@ export function LinkedInService($progress) {
     },
     async processInitialList() {
       let contacts = this.list.Contacts;
-      console.log(contacts);
       $progress.totalProspects = contacts.length;
 
       if (!this.authorized) {
@@ -146,7 +169,6 @@ export function LinkedInService($progress) {
       // parsed.myImage = profile.avatar;
       $progress.add(20);
       for (const contact of contacts) {
-
         let mutualsLink;
         try {
           let res = await this.parseProspectProfile(
@@ -160,7 +182,9 @@ export function LinkedInService($progress) {
           continue;
         }
         $progress.stepProspectScan();
-        contact.MutualContacts = await this.getMutualsFrom(mutualsLink);
+        if (mutualsLink) {
+          contact.MutualContacts = await this.getMutualsFrom(mutualsLink);
+        }
         contact.MutualContacts = contact.MutualContacts.map(m => ({
           name: m.name,
           linkedInProfileLink: m.url
@@ -168,7 +192,7 @@ export function LinkedInService($progress) {
       }
       console.log('DONE', this.list);
       browser.close();
-      return this.list
+      return this.list;
     }
   };
 }
