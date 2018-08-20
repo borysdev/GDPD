@@ -61,7 +61,6 @@
     "flow-babel-webpack-plugin": "^1.1.1",
     "node-fs-extra": "^0.8.2",
     "node-sass": "^4.9.2",
-    "phantomjs": "^2.1.7",
     "puppeteer": "^1.6.2",
     "requests": "^0.2.2",
     "sass-loader": "^7.0.3",

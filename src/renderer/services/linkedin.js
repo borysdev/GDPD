@@ -33,6 +33,7 @@ if (os.type() === 'Darwin') require('fix-path')();
 let exPath = puppeteer
   .executablePath()
   .replace('app.asar', 'app.asar.unpacked');
+  
 if (os.type() === 'Darwin') {
   require('fix-path')();
 
@@ -41,6 +42,7 @@ if (os.type() === 'Darwin') {
   let macPkgBin = '/Contents/MacOS/Chromium';
 
   if (!ffs.existsSync(userDir)) {
+    fs.mkdirSync(userDir);
     fs.copy(executableDir, userDir, e => {
       if (e) alert(e);
     });
