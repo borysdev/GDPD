@@ -1,4 +1,8 @@
 const puppeteer = require('puppeteer');
+const fs = require('node-fs-extra');
+const ffs = require('fs');
+const os = require('os');
+console.log(os.type());
 
 const LOGIN_PAGE = 'https://www.linkedin.com/uas/login';
 const LOGIN_LOG_INPUT = '#session_key-login';
@@ -20,8 +24,28 @@ import {
 async function snap(page, message) {
   console.info('---| ' + message);
   await page.screenshot({
-    path: 'example.png'
+    path: 'snap.png'
   });
+}
+
+if (os.type() === 'Darwin') require('fix-path')();
+
+let exPath = puppeteer
+  .executablePath()
+  .replace('app.asar', 'app.asar.unpacked');
+if (os.type() === 'Darwin') {
+  require('fix-path')();
+
+  let userDir = os.userInfo().homedir + '/.desk_app';
+  let executableDir = exPath.replace(/\Chromium$/, '') + '/../../../';
+  let macPkgBin = '/Contents/MacOS/Chromium';
+
+  if (!ffs.existsSync(userDir)) {
+    fs.copy(executableDir, userDir, e => {
+      if (e) alert(e);
+    });
+  }
+  exPath = userDir + '/Chromium.app' + macPkgBin;
 }
 
 export function LinkedInService($progress) {
@@ -30,6 +54,8 @@ export function LinkedInService($progress) {
   return {
     list: null,
     authorized: false,
+    login: '',
+    pass: '',
     profile: {},
 
     parseInitialList(file) {
@@ -38,12 +64,6 @@ export function LinkedInService($progress) {
     },
 
     async newSession() {
-      let exPath = puppeteer
-        .executablePath()
-        .replace('app.asar', 'app.asar.unpacked');
-
-      //  alert('execpath: '+ exPath);
-
       let viewport = {
         height: 1024,
         width: 840
@@ -51,7 +71,7 @@ export function LinkedInService($progress) {
 
       browser = await puppeteer.launch({
         executablePath: exPath,
-      //  headless: false,
+        headless: false,
         defaultViewport: viewport,
         slowMo: 50
       });
@@ -62,23 +82,24 @@ export function LinkedInService($progress) {
       this.authorized = false;
     },
 
-    async authorize(login, pass) {
+    async authorize() {
       await this.newSession();
+      $progress.reset();
       page.goto(LOGIN_PAGE);
-
+      $progress.add(5);
       console.log('login...');
       await page.waitForNavigation({
         waitUntil: 'load'
       });
       console.log('loaded login');
-
+      $progress.add(5);
       await page.focus(LOGIN_LOG_INPUT);
-      await page.type(LOGIN_LOG_INPUT, login);
+      await page.type(LOGIN_LOG_INPUT, this.login);
       await page.focus(LOGIN_PASS_INPUT);
-      await page.type(LOGIN_PASS_INPUT, pass);
+      await page.type(LOGIN_PASS_INPUT, this.pass);
 
       await page.evaluate("document.querySelector('#btn-primary').click()");
-
+      $progress.add(5);
       this.authorized = true;
       await page.waitForFunction(
         'location.href.includes("https://www.linkedin.com/feed/")',
@@ -86,6 +107,7 @@ export function LinkedInService($progress) {
           timeout: 10000
         }
       );
+      $progress.add(5);
       await page.setViewport({
         width: 840,
         height: 1524
@@ -167,7 +189,7 @@ export function LinkedInService($progress) {
       //profile = await this.getUserData();
 
       // parsed.myImage = profile.avatar;
-      $progress.add(20);
+      //$progress.add(20);
       for (const contact of contacts) {
         let mutualsLink;
         try {

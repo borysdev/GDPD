@@ -32,7 +32,13 @@ export const QUERY_HIGHLIGHTS_BLOCK = () => {
 export const QUERY_PROFILE_READY = () => {
     const EXPERIENCE_BLOCK = '#experience-section';
     const INTERESTS_BLOCK = '.pv-interests-section';
-    return !!document.querySelector(EXPERIENCE_BLOCK) || !!document.querySelector(INTERESTS_BLOCK);
+    const EDUCACTION_BLOCK = '#education-section';
+    const SKILLS_BLOCK = '.pv-skill-categories-section';
+
+    return !!document.querySelector(EXPERIENCE_BLOCK) ||
+        !!document.querySelector(INTERESTS_BLOCK) ||
+        !!document.querySelector(EDUCACTION_BLOCK) ||
+        !!document.querySelector(SKILLS_BLOCK);
 }
 export const QUERY_NEXT_BUTTON = () => {
     const MUTUALS_NEXT_BTN = 'button.next';

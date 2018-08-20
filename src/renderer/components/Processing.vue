@@ -33,6 +33,15 @@ export default {
     if (!this.$linkedin.list) return this.$router.push({ name: 'Homepage' });
     let file;
     try {
+      try {
+        await this.$linkedin.authorize();
+        console.log("Logged in successful")
+      }catch(e) {
+        console.log(e);
+        alert(e);
+        alert("Bad credentials");
+        return this.$router.push({ name: "Credentials" });
+      }
       file = await this.$linkedin.processInitialList();
     } catch (e) {
       alert(e);
