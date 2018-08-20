@@ -34,21 +34,20 @@ let exPath = puppeteer
   .executablePath()
   .replace('app.asar', 'app.asar.unpacked');
   
-if (os.type() === 'Darwin') {
-  require('fix-path')();
+// if (os.type() === 'Darwin' && false) {
+//   let userDir = os.userInfo().homedir + '/.desk_app';
+//   let executableDir = exPath.replace(/\Chromium$/, '') + '/../../../';
+//   let macPkgBin = '/Contents/MacOS/Chromium';
 
-  let userDir = os.userInfo().homedir + '/.desk_app';
-  let executableDir = exPath.replace(/\Chromium$/, '') + '/../../../';
-  let macPkgBin = '/Contents/MacOS/Chromium';
-
-  if (!ffs.existsSync(userDir)) {
-    fs.mkdirSync(userDir);
-    fs.copy(executableDir, userDir, e => {
-      if (e) alert(e);
-    });
-  }
-  exPath = userDir + '/Chromium.app' + macPkgBin;
-}
+//   if (!ffs.existsSync(userDir)) {
+//     fs.mkdirSync(userDir);
+//     fs.copy(executableDir, userDir, e => {
+//       if (e) alert(e);
+//     });
+//   }
+  
+//   exPath = userDir + '/Chromium.app'+macPkgBin;
+// }
 
 export function LinkedInService($progress) {
   let browser, page;
