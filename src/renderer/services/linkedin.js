@@ -5,6 +5,7 @@ const os = require('os');
 console.log(os.type());
 
 const LOGIN_PAGE = 'https://www.linkedin.com/uas/login';
+const FEED_PAGE = 'https://www.linkedin.com/feed/'
 const LOGIN_LOG_INPUT = '#session_key-login';
 const LOGIN_PASS_INPUT = '#session_password-login';
 
@@ -33,7 +34,7 @@ if (os.type() === 'Darwin') require('fix-path')();
 let exPath = puppeteer
   .executablePath()
   .replace('app.asar', 'app.asar.unpacked');
-  
+
 // if (os.type() === 'Darwin' && false) {
 //   let userDir = os.userInfo().homedir + '/.desk_app';
 //   let executableDir = exPath.replace(/\Chromium$/, '') + '/../../../';
@@ -45,7 +46,7 @@ let exPath = puppeteer
 //       if (e) alert(e);
 //     });
 //   }
-  
+
 //   exPath = userDir + '/Chromium.app'+macPkgBin;
 // }
 
@@ -64,17 +65,19 @@ export function LinkedInService($progress) {
       console.log('parsed', this.list);
     },
 
-    async newSession() {
+    async newSession({
+      show
+    }) {
       let viewport = {
-        height: 1024,
-        width: 840
+        height: 600,
+        width: 800
       };
 
       browser = await puppeteer.launch({
         executablePath: exPath,
-        headless: false,
+        headless: !show,
         defaultViewport: viewport,
-        slowMo: 50
+        slowMo: 25
       });
 
       page = await browser.newPage();
@@ -84,7 +87,9 @@ export function LinkedInService($progress) {
     },
 
     async authorize() {
-      await this.newSession();
+      await this.newSession({
+        show: true
+      });
       $progress.reset();
       page.goto(LOGIN_PAGE);
       $progress.add(5);
@@ -94,20 +99,32 @@ export function LinkedInService($progress) {
       });
       console.log('loaded login');
       $progress.add(5);
-      await page.focus(LOGIN_LOG_INPUT);
-      await page.type(LOGIN_LOG_INPUT, this.login);
-      await page.focus(LOGIN_PASS_INPUT);
-      await page.type(LOGIN_PASS_INPUT, this.pass);
+      // await page.focus(LOGIN_LOG_INPUT);
+      // await page.type(LOGIN_LOG_INPUT, this.login);
+      // await page.focus(LOGIN_PASS_INPUT);
+      // await page.type(LOGIN_PASS_INPUT, this.pass);
 
-      await page.evaluate("document.querySelector('#btn-primary').click()");
+      // await page.evaluate("document.querySelector('#btn-primary').click()");
       $progress.add(5);
-      this.authorized = true;
+      
       await page.waitForFunction(
-        'location.href.includes("https://www.linkedin.com/feed/")',
-        {
-          timeout: 10000
+        'location.href.includes("https://www.linkedin.com/feed/")', {
+          timeout: 100000
         }
       );
+      let cookies = await page.cookies();
+      console.log(cookies)
+      await browser.close();
+
+      await this.newSession({
+        show: false
+      });
+      console.log('open new browser')
+      await page.setCookie.apply(page, cookies);
+      console.log('set cookies')
+      await page.goto(FEED_PAGE);
+      await page.waitFor(150);
+      this.authorized = true;
       $progress.add(5);
       await page.setViewport({
         width: 840,
@@ -215,6 +232,7 @@ export function LinkedInService($progress) {
       }
       console.log('DONE', this.list);
       browser.close();
+
       return this.list;
     }
   };
