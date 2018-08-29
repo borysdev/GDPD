@@ -58,6 +58,7 @@ export function LinkedInService($progress) {
     authorized: false,
     login: '',
     pass: '',
+    processed: null,
     profile: {},
 
     parseInitialList(file) {
@@ -233,7 +234,7 @@ export function LinkedInService($progress) {
       console.log('DONE', this.list);
       browser.close();
 
-      return this.list;
+      this.processed = this.list;
     }
   };
 }

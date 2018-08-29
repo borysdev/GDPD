@@ -1,10 +1,13 @@
 <template>
-    <div>
-        <h3 class="big" style="text-align: center">List Processing</h3>
-        <div class="progress-container">
-            <div :style="`width: ${percents}%`" class="progress-bar">
-                <p class="percents">{{progress}}%</p>
-            </div>
+    <div class="card">
+        <h3 class="big" style="text-align: center">Processing list</h3>
+        <div class="animate">
+          <img src="~@/assets/icon/refresh.svg">
+        </div>
+        <div style="width: 200px" class="progress-container">
+            <div class="bar"></div>
+            <div :style="`width: ${percents}%`" class="progress-bar"></div>
+            <p class="percents">{{progress}}%</p>
         </div>  
     </div>
 </template>
@@ -37,8 +40,9 @@ export default {
         await this.$linkedin.authorize();
         console.log("Logged in successful")
       }catch(e) {
-        alert(e);
-        return this.$router.push({ name: "Credentials" });
+        return
+      //  alert(e);
+      //  return this.$router.push({ name: "Upload" });
       }
       file = await this.$linkedin.processInitialList();
     } catch (e) {

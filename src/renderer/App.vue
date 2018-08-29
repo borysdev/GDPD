@@ -1,15 +1,20 @@
 <template>
-  <div id="app">
+  <div 
+      @drop.stop.prevent="() => {}"  
+      @dragstart="() => {}"
+      @dragenter="() => {}"
+      @drag="() => {}"
+      @dragend="() => {}"
+      @dragover.stop.prevent="() => {}"
+      @dragleave="() => {}"
+    id="app">
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'el-srm',
-  created() {
-    
-  },
+  name: 'el-srm'
 };
 </script>
 <style lang="scss">

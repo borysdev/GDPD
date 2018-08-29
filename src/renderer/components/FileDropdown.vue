@@ -14,13 +14,11 @@
             @dragleave="dragging=false"
             
             :class="{ dragging }">
-            <p class="title">{{label}}</p>
-            <img class="icon" src="~@/assets/icon/upload.svg">
+            <p class="title">Upload initial list.json</p>
         </div>
         
         <div class="file-manual">
-            <p style="font-weight: 600">or</p>
-            <button class="btn-black big" @click="openPicker()">Select a file</button>
+            <button class="btn" style="margin-top: 32px; padding: 8px 64px; font-size: 20px;" @click="openPicker()">Upload</button>
             <input @change="onManualFile($event.target)" ref="fileInput" multiple="false" :accept="formats" type="file" style="display: none">
         </div>
     </div>
