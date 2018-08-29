@@ -40,9 +40,9 @@ export default {
         await this.$linkedin.authorize();
         console.log('Logged in successful');
       } catch (e) {
-        return;
-        //  alert(e);
-        //  return this.$router.push({ name: "Upload" });
+         alert(e);
+
+         return this.$router.push({ name: "Upload" });
       }
       file = await this.$linkedin.processInitialList();
     } catch (e) {
@@ -51,7 +51,7 @@ export default {
     }
     this.$progress.finish();
     this.$router.push({ name: 'Download' });
-    // this.finishProcessing(file);
+    this.finishProcessing(file);
   },
   computed: {
     percents() {

@@ -60,21 +60,28 @@ h3 {
   max-height: 660px;
   flex-direction: column;
   text-align: center;
+
   h3 {
     flex: .2;
   }
+
   section {
     flex: auto;
   }
 }
+
 /* The animation code */
 @keyframes rotate {
-  from { transform: rotate(0deg)}
-  to {transform: rotate(360deg)}
+  from {
+    transform: rotate(0deg)
+  }
+
+  to {
+    transform: rotate(360deg)
+  }
 }
 
 /* The element to apply the animation to */
-
 .btn {
   background: linear-gradient(#0068A8 0%, #0B5F93 100%);
   border: none;
@@ -86,16 +93,20 @@ h3 {
   font-weight: 600;
   display: inline-block;
 }
+
 h3 {
   @include h4;
   font-weight: 700;
   width: 100%;
   text-align: center;
 }
+
 .legal {
-  overflow: scroll;
-  height: calc(90% - 120px)
+  // overflow: scroll;
+  height: calc(100% - 120px);
+  text-align: left;
 }
+
 .animate {
   width: 100%;
   height: 280px;
@@ -104,7 +115,7 @@ h3 {
 
 .download {
   margin: 84px auto;
-  padding: 32px ;
+  padding: 32px;
   height: 200px;
   width: 340px;
   position: relative;
@@ -112,7 +123,7 @@ h3 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(to right, rgba(0,108, 172, .15) 0%, rgba(0,125,134,.1) 100% );
+  background: linear-gradient(to right, rgba(0, 108, 172, .15) 0%, rgba(0, 125, 134, .1) 100%);
 }
 
 .animate img {
@@ -124,6 +135,7 @@ h3 {
   animation-iteration-count: infinite;
   animation-timing-function: linear
 }
+
 .upload-container {
   @include center-vh;
 
@@ -137,7 +149,6 @@ h3 {
       height: 340px;
       display: inline-block;
       width: 100%;
-
       border: $accent-2 2px dashed;
       z-index: 3;
       cursor: pointer;

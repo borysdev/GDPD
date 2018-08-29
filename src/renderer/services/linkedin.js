@@ -107,7 +107,7 @@ export function LinkedInService($progress) {
 
       // await page.evaluate("document.querySelector('#btn-primary').click()");
       $progress.add(5);
-      
+
       await page.waitForFunction(
         'location.href.includes("https://www.linkedin.com/feed/")', {
           timeout: 100000
@@ -131,6 +131,7 @@ export function LinkedInService($progress) {
         width: 840,
         height: 1524
       });
+
     },
     async getUserData() {
       await page.waitForFunction(QUERY_PROFILE_BLOCK);
@@ -150,8 +151,7 @@ export function LinkedInService($progress) {
         prospect = await page.evaluate(PROSPECT_INFO);
 
         try {
-          await page.waitForFunction(QUERY_HIGHLIGHTS_BLOCK);
-          hasMutuals = true;
+          hasMutuals = await page.evaluate(QUERY_HIGHLIGHTS_BLOCK);
         } catch (e) {
           console.log('No mutuals with contact');
         }
@@ -226,10 +226,12 @@ export function LinkedInService($progress) {
         if (mutualsLink) {
           contact.MutualContacts = await this.getMutualsFrom(mutualsLink);
         }
-        contact.MutualContacts = contact.MutualContacts.map(m => ({
-          name: m.name,
-          linkedInProfileLink: m.url
-        }));
+        if (contact.MutualContacts) {
+          contact.MutualContacts = contact.MutualContacts.map(m => ({
+            name: m.name,
+            linkedInProfileLink: m.url
+          }));
+        }
       }
       console.log('DONE', this.list);
       browser.close();
