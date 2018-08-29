@@ -1,7 +1,9 @@
 <template>
-    <div class="card">
+    <div class="card" style="justify-content: space-between">
         <h3>Upload file</h3>
-        <file-dropdown @file="onFile($event)" formats=".json" />
+        <section>
+          <file-dropdown @file="onFile($event)" formats=".json" />
+        </section>
     </div>
 </template>
 <script>

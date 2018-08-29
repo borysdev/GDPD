@@ -38,11 +38,11 @@ export default {
     try {
       try {
         await this.$linkedin.authorize();
-        console.log("Logged in successful")
-      }catch(e) {
-        return
-      //  alert(e);
-      //  return this.$router.push({ name: "Upload" });
+        console.log('Logged in successful');
+      } catch (e) {
+        return;
+        //  alert(e);
+        //  return this.$router.push({ name: "Upload" });
       }
       file = await this.$linkedin.processInitialList();
     } catch (e) {
@@ -50,7 +50,8 @@ export default {
       return this.$router.push({ name: 'Homepage' });
     }
     this.$progress.finish();
-    this.finishProcessing(file);
+    this.$router.push({ name: 'Download' });
+    // this.finishProcessing(file);
   },
   computed: {
     percents() {

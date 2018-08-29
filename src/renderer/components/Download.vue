@@ -1,15 +1,21 @@
 <template>
     <div class="card">
         <h3>Save file</h3>
-        <div class="download">
-            Download Parsed {{$linkedin.list.name}}.json
-        </div>
-        <div class="big" style="">
-            <a @click="download()">Save file</a>
-        </div>
+        <section>
+          <div class="download">
+            <p>Parsed {{$linkedin.list.name}}.json</p>
+          </div>
+        </section>
+        <div>
+          <a style="margin-bottom: 64px;" class="btn" @click="download()">Save file</a>
+        </div>       
+        
     </div>
 </template>
 <script>
+import { remote } from 'electron';
+import * as fs from 'fs';
+
 export default {
   name: "download",
   uses: ["linkedin"],

@@ -55,6 +55,17 @@ h3 {
   width: 90%;
   margin: auto;
   padding: 16px;
+  display: flex;
+  max-width: 860px;
+  max-height: 660px;
+  flex-direction: column;
+  text-align: center;
+  h3 {
+    flex: .2;
+  }
+  section {
+    flex: auto;
+  }
 }
 /* The animation code */
 @keyframes rotate {
@@ -71,7 +82,9 @@ h3 {
   outline: 0;
   padding: 4px 44px;
   color: white;
+  cursor: pointer;
   font-weight: 600;
+  display: inline-block;
 }
 h3 {
   @include h4;
@@ -90,10 +103,16 @@ h3 {
 }
 
 .download {
-  margin-top: 32px;
-  margin-bottom: 64px;
-  padding: 32px 96px;
-  background: rgba(0, 0, 0, 0.08)
+  margin: 84px auto;
+  padding: 32px ;
+  height: 200px;
+  width: 340px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, rgba(0,108, 172, .15) 0%, rgba(0,125,134,.1) 100% );
 }
 
 .animate img {
