@@ -51,7 +51,7 @@ export default {
     }
     this.$progress.finish();
     this.$router.push({ name: 'Download' });
-    this.finishProcessing(file);
+//    this.finishProcessing(file);
   },
   computed: {
     percents() {
