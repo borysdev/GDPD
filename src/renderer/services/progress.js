@@ -12,14 +12,19 @@ export function ProgressService() {
         stepProspectScan(){
             let perProspect = 80 / this.totalProspects;
             let perProspectScan = (perProspect/2);
+            console.log(`pp: ${perProspect} \npps: ${perProspectScan}`);
             this.add(perProspectScan)
         },
         stepMutualScan(perPage = 9) {
             let perProspect = 80 / this.totalProspects;
             let perProspectScan = (perProspect/2);
             let pages = Math.floor(this.totalMutuals/perPage);
+            if(isNaN(pages)) pages = 1
             if(this.totalMutuals%perPage !=0) pages++;
             let perMutualsPage = (perProspect - perProspectScan) / pages;
+            console.log(`\npp: ${perProspect}
+                        \npps: ${perProspectScan}
+                        \npages: ${pages}`);
             this.add(perMutualsPage)
         },
         reset() {

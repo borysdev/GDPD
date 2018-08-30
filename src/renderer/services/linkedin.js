@@ -231,6 +231,8 @@ export function LinkedInService($progress) {
             name: m.name,
             linkedInProfileLink: m.url
           }));
+        }else {
+          contact.MutualContacts = []
         }
       }
       console.log('DONE', this.list);
