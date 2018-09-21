@@ -180,7 +180,6 @@ export function LinkedInService($progress) {
       while (hasNextPage) {
         await page.waitForFunction(`'${prevUrl}' !== location.href`);
         await page.waitFor(500);
-
         let m = await page.evaluate(FETCH_MUTUALS_LIST);
         console.log(`Scrapped from page ${m.length} users.`, m);
         mutuals = [...mutuals, ...m];

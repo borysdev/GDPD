@@ -13,7 +13,7 @@ export const PROSPECT_INFO = () => {
 
     return {
         title: titleBlock.innerText,
-        picture: avatarBlock.style.backgroundImage.replace('url("', '').replace('")', ''),
+        picture: avatarBlock ? avatarBlock.style.backgroundImage.replace('url("', '').replace('")', '') : '',
         name: nameBlock.innerText,
         connectionDegree: parseInt(circleBlock.innerText), // '1-st' to 1
         location: locationBlock.innerText,
@@ -80,7 +80,7 @@ export const FETCH_MUTUALS_LIST = () => {
 
         a.push({
             url: linkBlock.href,
-            image: avatarBlock.style.backgroudImage,
+            image: avatarBlock ? avatarBlock.style.backgroudImage : '',
             circle: parseInt(circleBlock.innerText),
             name: nameBlock.innerText,
             title: titleBlock.innerText
